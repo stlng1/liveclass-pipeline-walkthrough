@@ -1,0 +1,64 @@
+
+#Setup github ACTIONS PIPELINE
+fork repo from dare-devops - liveclass-pipeline-walkthrough/ create new repo on github
+clone repo to vscode
+create .github hidden folder in repo
+create folder 'workflows' in the .github folders
+inside the workflow folder is where you have your yaml files.
+
+#Create Docker build and push to images
+copy html folder containing monolith-website code into repo root folder
+create Dockerfile to build monolith-website image in repo root folder
+create a yaml file in the workflows folder to create a docker image and push to dockerhub
+update environment secret (dockerhub login details) on github actions --> setting --> secrets and variables --> actions
+commit and push codes to trigger the PIPELINE
+
+#Publish Helm Chart
+create helm folder in repo root folder
+mkdir helm && cd helm
+helm create monolith-website
+
+#Create IAM user with a custom policy
+1. create an IAM user to to upload charts to helm s3 repository
+2. Generate an IAM credential ( Access Key and Secret)
+3. run aws configre — profile=helm-repo to store the keys as aws profile in your computer.
+4. export the profile using command AWS_PROFILE=helm-repo to consume aws cli for helm operation.
+
+#Create S3 Bucket
+1. create aws s3 bucket (from console or terraform)
+
+   liveclass-helm-repo
+2. configuring S3 as repo for helm: package website and copy to s3 bucket
+
+helm package monolith-website
+
+aws s3 cp monolith-website-0.1.0.tgz s3://liveclass-helm-repo/monolith-website-0.1.0.tgz 
+
+3. create or update index.yaml file which contains metadata for your helm repository
+
+helm repo index.yaml --url https://liveclass-helm-repo.s3.amazonaws.com/chats/ . 
+
+4. copy index.yaml to s3
+
+aws s3 cp index.yaml s3://liveclass-helm-repo/charts/index.yaml
+
+5. connecting helm to s3 repo, requires a plugin
+
+helm plugin install https://github.com/hypnoglow/helm-s3.git
+
+6. configure helm repo to point to s3 bucket
+
+export AWS_REGION=eu-west-3 
+
+helm repo add monolith-website s3://liveclass-helm-repo/charts
+
+7. Push Helm Chart to S3 Repository
+
+helm s3 push --force monolith-website-0.1.0.tgz monolith-website
+
+#Create helm release pipeline
+create dynamic_deploy_helm_release.yaml file in workflows
+
+#Deploy helm to k8s
+create kubeconfig file
+check for actions in marketplace
