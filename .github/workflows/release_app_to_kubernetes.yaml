@@ -15,7 +15,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: eu-west-3
       EKS_CLUSTER_NAME: nonprod-dev
-      S3_BUCKET_NAME: liveclass-helm-repo
+      S3_BUCKET_NAME: strange-liveclass-helm-repo
       K8S_NAMESPACE: liveclass
       ENV_STAGE: prod
 
@@ -34,10 +34,10 @@ jobs:
         run: helm plugin install https://github.com/hypnoglow/helm-s3.git
 
       - name: Add Helm Repo
-        run: helm repo add monolith-website s3://liveclass-helm-repo/charts
+        run: helm repo add monolith-website s3://strange-liveclass-helm-repo/charts
 
       - name: Download the helm chart
-        run: helm fetch  monolith-website/monolith-website
+        run: helm fetch monolith-website/monolith-website
 
       - name: Extract Helm Chart
         run: |
