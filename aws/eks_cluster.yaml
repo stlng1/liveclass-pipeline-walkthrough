@@ -1,0 +1,11 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: nonprod-dev
+  region: eu-west-3
+
+nodeGroups:
+  - name: ng-monolith
+    instanceType: t2.micro
+    desiredCapacity: 2
