@@ -17,7 +17,7 @@ jobs:
       EKS_CLUSTER_NAME: nonprod-dev
       S3_BUCKET_NAME: strange-liveclass-helm-repo
       K8S_NAMESPACE: liveclass
-      ENV_STAGE: prod
+      ENV_STAGE: dev
 
     steps:
       - name: Checkout code
@@ -34,10 +34,10 @@ jobs:
         run: helm plugin install https://github.com/hypnoglow/helm-s3.git
 
       - name: Add Helm Repo
-        run: helm repo add monolith-website s3://strange-liveclass-helm-repo/charts
+        run: helm repo add monolith_website s3://strange-liveclass-helm-repo/charts
 
       - name: Download the helm chart
-        run: helm fetch monolith-website/monolith-website
+        run: helm fetch monolith-website/monolith_website
 
       - name: Extract Helm Chart
         run: |
@@ -51,7 +51,8 @@ jobs:
         run: |
             pwd
             ls -latr
-            helm upgrade -i monolith-app monolith-website --create-namespace --namespace ${{ env.K8S_NAMESPACE }} -f helm/environments/${{ env.ENV_STAGE }}/values.yaml
-            
+            #helm upgrade -i monolith-app monolith-website --create-namespace --namespace ${{ env.K8S_NAMESPACE }} -f helm/environments/${{ env.ENV_STAGE }}/values.yaml
+            helm upgrade --install --create-namespace -n ${{ env.K8S_NAMESPACE }} -f helm/environments/${{ env.ENV_STAGE }}/values.yaml monolith-app monolith-website
+
       - name: Validate Deployment
         run: kubectl rollout status deployment/monolith-app-monolith-website --namespace ${{ env.K8S_NAMESPACE }}
