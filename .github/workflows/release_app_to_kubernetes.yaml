@@ -34,10 +34,10 @@ jobs:
         run: helm plugin install https://github.com/hypnoglow/helm-s3.git
 
       - name: Add Helm Repo
-        run: helm repo add monolith_website s3://strange-liveclass-helm-repo/charts
+        run: helm repo add monolith-website s3://strange-liveclass-helm-repo/charts
 
       - name: Download the helm chart
-        run: helm fetch monolith-website/monolith_website
+        run: helm fetch monolith-website/monolith-website
 
       - name: Extract Helm Chart
         run: |
