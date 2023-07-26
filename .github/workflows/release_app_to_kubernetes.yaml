@@ -39,6 +39,9 @@ jobs:
       - name: Download the helm chart
         run: helm fetch monolith-website/monolith-website
 
+      - name: Update Helm Repo
+        run: helm repo update 
+
       - name: Extract Helm Chart
         run: |
             tar -zxvf monolith-website-*.tgz
