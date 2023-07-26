@@ -34,3 +34,4 @@ jobs:
         run: |
           docker build -t stlng/monolith-app:${{ env.appVersion }} .
           docker push stlng/monolith-app:${{ env.appVersion }}
+          
